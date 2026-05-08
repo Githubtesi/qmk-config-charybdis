@@ -76,3 +76,55 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // clang-format on
 // コンボ機能の受け皿（これがないとビルドエラーになります） 
 combo_t key_combos[] = {};
+
+// レイヤー変更通知
+// Layer 0 -> F13
+// Layer 1 -> F14
+// Layer 2 -> F15
+// Layer 3 -> F16
+// Layer 4 -> F17
+// Layer 5 -> F18
+// Layer 6 -> F19
+// Layer 7 -> F20
+
+static uint8_t last_notified_layer = 255;
+
+static void notify_layer_change(uint8_t layer) {
+    switch (layer) {
+        case 0:
+            tap_code(KC_F13);
+            break;
+        case 1:
+            tap_code(KC_F14);
+            break;
+        case 2:
+            tap_code(KC_F15);
+            break;
+        case 3:
+            tap_code(KC_F16);
+            break;
+        case 4:
+            tap_code(KC_F17);
+            break;
+        case 5:
+            tap_code(KC_F18);
+            break;
+        case 6:
+            tap_code(KC_F19);
+            break;
+        case 7:
+            tap_code(KC_F20);
+            break;
+    }
+}
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    uint8_t layer = get_highest_layer(state | default_layer_state);
+
+    if (layer != last_notified_layer) {
+        last_notified_layer = layer;
+        notify_layer_change(layer);
+    }
+
+    return state;
+}
